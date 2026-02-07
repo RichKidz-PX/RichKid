@@ -50,7 +50,7 @@ local function FindFruit()
         end
     end
     if not found then
-        task.wait(3)
+        task.wait(5)
         HopServer()
     end
 end
