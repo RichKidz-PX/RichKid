@@ -8,51 +8,35 @@ local JobId = game.JobId
 local PlaceId=game.PlaceId
 local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
-local TweenService = game:GetService("TweenService") -- Thêm dịch vụ Tween
 
 task.spawn(function()
 if not Player.LocalPlayer.Team then
-    ReplicatedStorage.Remotes.CommF_:InvokeServer("SetTeam", "Marines")
+    ReplicatedStorage.Remotes.CommF_:InvokeServer("SetTeam","Marines")
 end
 end)
 
-local url = "https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?sortOrder=Asc&limit=100&t="
+local url = "https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?limit=100&t=" .. tick()
 
 local function HopServer()
     local success,result
     repeat
-    success,result = pcall(function()
-    return HttpService:JSONDecode(game:HttpGet(url))
-    end)
-    task.wait(1)
+        success,result = pcall(function()
+            return HttpService:JSONDecode(game:HttpGet(url))
+        end)
+        task.wait(1)
     until success and result and result.data
-    local Server= result.data
-    local MainServer = Player.LocalPlayer.UserId % 100 + 1
-    local StartServer = math.max(1 , MainServer - 2)
-    local LastServer = math.min(100,MainServer + 2)
-    for i = StartServer , LastServer do
-        if Server[i].id ~= JobId and Server[i].playing < Server[i].maxPlayers then
+    
+    local Server = result.data
+    -- Duyệt thẳng từ server 1 đến server 100 trong danh sách trả về
+    for i = 1, #Server do
+        -- Kiểm tra server không phải hiện tại và không full người
+        if Server[i].id ~= JobId  then
             pcall(function()
-            TeleportService:TeleportToPlaceInstance(PlaceId , Server[i].id)
+                TeleportService:TeleportToPlaceInstance(PlaceId , Server[i].id)
             end)
-        task.wait(2)
+            task.wait(0.5)
         end
     end
-end
-
--- Hàm phụ trách Tween (bay mượt)
-local function TweenTo(targetCFrame)
-    local Character = Player.LocalPlayer.Character
-    local RootPart = Character and Character:FindFirstChild("HumanoidRootPart")
-    if not RootPart then return end
-
-    local distance = (RootPart.Position - targetCFrame.Position).Magnitude
-    local speed = 300 -- Bạn có thể chỉnh tốc độ ở đây
-    local tweenInfo = TweenInfo.new(distance / speed, Enum.EasingStyle.Linear)
-    
-    local tween = TweenService:Create(RootPart, tweenInfo, {CFrame = targetCFrame})
-    tween:Play()
-    return tween
 end
 
 local function FindFruit() 
@@ -63,13 +47,11 @@ local function FindFruit()
     for i,v in ipairs(workspace:GetChildren()) do
         if v and (v:IsA("Tool") or v:IsA("Model")) and v.Name:find("Fruit") then
             if #v:GetChildren() > 0 then 
-            found = true
-            local Handle = v:FindFirstChild("Handle")
-            if Handle then
-                -- Đổi từ RootPart.CFrame sang TweenTo
-                local tween = TweenTo(Handle.CFrame)
-                if tween then tween.Completed:Wait() end -- Đợi bay tới nơi mới dừng
-            end
+                found = true
+                local Handle = v:FindFirstChild("Handle")
+                if Handle then
+                    RootPart.CFrame = Handle.CFrame
+                end
             end
         end
     end
