@@ -1,3 +1,6 @@
+if queue_on_teleport then 
+	queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/RichKidz-PX/RichKid/main/FindFruit.lua"))()()]])
+end
 repeat task.wait() until game:IsLoaded()
 local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
