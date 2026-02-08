@@ -8,37 +8,47 @@ local JobId = game.JobId
 local PlaceId=game.PlaceId
 local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
-
 task.spawn(function()
 if not Player.LocalPlayer.Team then
-    ReplicatedStorage.Remotes.CommF_:InvokeServer("SetTeam","Marines")
+    ReplicatedStorage.Remotes.CommF_:InvokeServer("SetTeam", "Marines")
 end
 end)
-
-local url = "https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?limit=100&t=" .. tick()
-
+local url = "https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?sortOrder=Asc&limit=100&t="
 local function HopServer()
     local success,result
     repeat
-        success,result = pcall(function()
-            return HttpService:JSONDecode(game:HttpGet(url))
-        end)
-        task.wait(1)
+    success,result = pcall(function()
+    return HttpService:JSONDecode(game:HttpGet(url))
+    end)
+    task.wait(1)
     until success and result and result.data
-    
     local Server = result.data
-    -- Duyệt thẳng từ server 1 đến server 100 trong danh sách trả về
-    for i = 1, #Server do
-        -- Kiểm tra server không phải hiện tại và không full người
-        if Server[i].id ~= JobId  then
+    local MainServer = Player.LocalPlayer.UserId % 100 + 1
+    local StartServer = math.max(1 , MainServer - 2)
+    local LastServer = math.min(100,MainServer + 2)
+    for i = StartServer , LastServer do
+        if Server[i].id ~= JobId and Server[i].playing < Server[i].maxPlayers then
             pcall(function()
-                TeleportService:TeleportToPlaceInstance(PlaceId , Server[i].id)
-            end)
-            task.wait(0.5)
+			TeleportService:TeleportToPlaceInstance(PlaceId , Server[i].id)
+			end)
+	    task.wait(2)
         end
     end
 end
-
+local function StoreFruit()
+    local Character = Player.LocalPlayer.Character
+    local Backpack = Player.LocalPlayer.Backpack
+    local Store = {Character,Backpack}
+    for i,v in ipairs(Store) do
+    for i,Tool in ipairs(v:GetChildren()) do
+        if Tool:IsA("Tool") and Tool.Name:find("Fruit") then
+            local FruitName = Tool.Name:gsub(" Fruit","")
+            local Fruit = FruitName.."-"..FruitName
+            ReplicatedStorage.Remotes.CommF_:InvokeServer("StoreFruit",Fruit,Tool)
+        end
+    end
+end
+end
 local function FindFruit() 
     local found = false
     local Character = Player.LocalPlayer.Character
@@ -47,11 +57,11 @@ local function FindFruit()
     for i,v in ipairs(workspace:GetChildren()) do
         if v and (v:IsA("Tool") or v:IsA("Model")) and v.Name:find("Fruit") then
             if #v:GetChildren() > 0 then 
-                found = true
-                local Handle = v:FindFirstChild("Handle")
-                if Handle then
-                    RootPart.CFrame = Handle.CFrame
-                end
+            found = true
+            local Handle = v:FindFirstChild("Handle")
+            RootPart.CFrame = Handle.CFrame
+            repeat task.wait() until v.Parent ~= workspace
+            StoreFruit()
             end
         end
     end
@@ -60,7 +70,6 @@ local function FindFruit()
         HopServer()
     end
 end
-
 task.spawn(function()
     while true do
         FindFruit()
