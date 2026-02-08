@@ -56,17 +56,17 @@ local function FindFruit()
     local RootPart = Character.HumanoidRootPart
     for i,v in ipairs(workspace:GetChildren()) do
         if v and (v:IsA("Tool") or v:IsA("Model")) and v.Name:find("Fruit") then
-            if #v:GetChildren() > 0 then 
+            
             found = true
             local Handle = v:FindFirstChild("Handle")
             RootPart.CFrame = Handle.CFrame
             repeat task.wait() until v.Parent ~= workspace
             StoreFruit()
-            end
+           
         end
     end
     if not found then
-        task.wait(10)
+        task.wait(3)
         HopServer()
     end
 end
