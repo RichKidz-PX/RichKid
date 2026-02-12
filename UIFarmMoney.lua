@@ -81,6 +81,5 @@ local function CreatToggle(name, stringname, Boolean, PosY)
         TweenService:Create(TextButton, TweenInfo, {BackgroundColor3 = Button}):Play()
     end)
 end
-CreatToggle("Auto Farm", "AutoFarm", AutoFarm, -17)
-CreatToggle("Auto Farm Until Get Item", "AutoFarmUntilGetItem", AutoFarmUntilGetItem, 17)
+
 
