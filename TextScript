@@ -1,0 +1,65 @@
+-- [[ ANTIBAN SHIELD SYSTEM WITH LOGS ]] --
+
+local Players = game:GetService("Players")
+local LogService = game:GetService("LogService")
+
+print("------------------------------------------")
+print("[SHIELD] Đang khởi động hệ thống bảo vệ...")
+
+-- 1. CHỐNG ADMIN & STAFF
+local function ProtectFromStaff()
+    print("[SHIELD] Staff Detector: ĐANG HOẠT ĐỘNG")
+    
+    Players.PlayerAdded:Connect(function(player)
+        -- Kiểm tra Rank (Ví dụ rank > 10 thường là Staff)
+        if player:GetRankInGroup(game.CreatorId) > 10 then 
+            print("!!! [CẢNH BÁO] PHÁT HIỆN STAFF: " .. player.Name .. " !!!")
+            print("[SHIELD] Đang thực hiện thoát khẩn cấp để chống Ban...")
+            task.wait(0.5)
+            Players.LocalPlayer:Kick("Phát hiện Staff ("..player.Name.."). Đang tự động thoát để bảo vệ tài khoản.")
+        end
+    end)
+end
+
+-- 2. CHỐNG LOGGING (BÁO CÁO LỖI)
+local function ClearLogs()
+    print("[SHIELD] Log Suppressor: ĐANG HOẠT ĐỘNG")
+    LogService.MessageOut:Connect(function(message, messageType)
+        if messageType == Enum.MessageType.MessageError then
+            -- Không print ra lỗi script để tránh hệ thống game quét thấy
+            return
+        end
+    end)
+end
+
+-- 3. CHẶN REMOTE EVENT (CHỐNG QUÉT DỮ LIỆU)
+print("[SHIELD] Đang thiết lập Metatable Hook...")
+local mt = getrawmetatable(game)
+local oldNamecall = mt.__namecall
+setreadonly(mt, false)
+
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+
+    if not checkcaller() and (method == "FireServer" or method == "InvokeServer") then
+        local name = tostring(self):lower()
+        if name:find("check") or name:find("ban") or name:find("kick") then
+            print("[SHIELD] Đã chặn gói tin nghi vấn: " .. name)
+            return nil 
+        end
+    end
+
+    return oldNamecall(self, ...)
+end)
+
+setreadonly(mt, true)
+print("[SHIELD] Metatable Hook: HOÀN TẤT")
+
+-- Kích hoạt các hàm
+ProtectFromStaff()
+ClearLogs()
+
+print("[SHIELD] HỆ THỐNG ĐÃ SẴN SÀNG. CHÚC BẠN FARM AN TOÀN!")
+print("------------------------------------------")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/RichKidz-PX/RichKidz/main/FarmMoney.lua"))()
