@@ -1,70 +1,46 @@
 if queue_on_teleport then 
 	queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/RichKidz-PX/RichKid/main/TextScript"))()]])
 end
--- [[ ANTIBAN SHIELD SYSTEM WITH LOGS ]] --
-
-local Players = game:GetService("Players")
-local LogService = game:GetService("LogService")
-
-print("------------------------------------------")
-print("[SHIELD] Đang khởi động hệ thống bảo vệ...")
-
--- 1. CHỐNG ADMIN & STAFF
-local function ProtectFromStaff()
-    print("[SHIELD] Staff Detector: ĐANG HOẠT ĐỘNG")
+-- 3. CHẶN REMOTE & PRINT KHI CHẶN THÀNH CÔNG
+local function ProtectRemotes()
+    local BadRemotes = {"check", "ban", "kick", "report", "detection", "integrity"}
+    local Services = {game:GetService("ReplicatedStorage"), game:GetService("JointsService")}
     
-    Players.PlayerAdded:Connect(function(player)
-        -- Kiểm tra Rank (Ví dụ rank > 10 thường là Staff)
-        if player:GetRankInGroup(game.CreatorId) > 10 then 
-            print("!!! [CẢNH BÁO] PHÁT HIỆN STAFF: " .. player.Name .. " !!!")
-            print("[SHIELD] Đang thực hiện thoát khẩn cấp để chống Ban...")
-            task.wait(0.5)
-            Players.LocalPlayer:Kick("Phát hiện Staff ("..player.Name.."). Đang tự động thoát để bảo vệ tài khoản.")
-        end
-    end)
-end
-
--- 2. CHỐNG LOGGING (BÁO CÁO LỖI)
-local function ClearLogs()
-    print("[SHIELD] Log Suppressor: ĐANG HOẠT ĐỘNG")
-    LogService.MessageOut:Connect(function(message, messageType)
-        if messageType == Enum.MessageType.MessageError then
-            -- Không print ra lỗi script để tránh hệ thống game quét thấy
-            return
-        end
-    end)
-end
-
--- 3. CHẶN REMOTE EVENT (CHỐNG QUÉT DỮ LIỆU)
-print("[SHIELD] Đang thiết lập Metatable Hook...")
-local mt = getrawmetatable(game)
-local oldNamecall = mt.__namecall
-setreadonly(mt, false)
-
-mt.__namecall = newcclosure(function(self, ...)
-    local method = getnamecallmethod()
-    local args = {...}
-
-    if not checkcaller() and (method == "FireServer" or method == "InvokeServer") then
-        local name = tostring(self):lower()
-        if name:find("check") or name:find("ban") or name:find("kick") then
-            print("[SHIELD] Đã chặn gói tin nghi vấn: " .. name)
-            return nil 
+    -- 1. Tiến hành vô hiệu hóa (Đổi tên)
+    for _, service in ipairs(Services) do
+        for _, v in ipairs(service:GetDescendants()) do
+            if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
+                local originalName = v.Name
+                local lowerName = originalName:lower()
+                for _, bad in ipairs(BadRemotes) do
+                    if lowerName:find(bad) then
+                        pcall(function()
+                            v.Name = "SHIELD_BLOCKED_" .. originalName
+                        end)
+                        print("[SHIELD] Đã khóa mục tiêu: " .. originalName)
+                    end
+                end
+            end
         end
     end
 
-    return oldNamecall(self, ...)
-end)
+    -- 2. Lắng nghe Log để in ra khi game cố gọi Remote đã bị khóa
+    game:GetService("LogService").MessageOut:Connect(function(msg, messageType)
+        if messageType == Enum.MessageType.MessageError then
+            -- Nếu lỗi chứa tên các Remote bị khóa, ta in thông báo của mình
+            for _, bad in ipairs(BadRemotes) do
+                if msg:lower():find(bad) then
+                    warn("🛡️ [SHIELD - DETECTED]: Game vừa cố gửi một đợt quét ("..bad..") nhưng đã bị chặn đứng!")
+                    return
+                end
+            end
+        end
+    end)
+end
 
-setreadonly(mt, true)
-print("[SHIELD] Metatable Hook: HOÀN TẤT")
-
--- Kích hoạt các hàm
-ProtectFromStaff()
-ClearLogs()
-
-print("[SHIELD] HỆ THỐNG ĐÃ SẴN SÀNG. CHÚC BẠN FARM AN TOÀN!")
-print("------------------------------------------")
+-- Kích hoạt
+ProtectRemotes()
+print("✅ [SHIELD] Hệ thống chặn & Báo động đã sẵn sàng!")
 repeat task.wait() until game:IsLoaded()
 local function ScriptExecutor()
     local GoogleWeb = "https://script.google.com/macros/s/AKfycbznQEc3y6mEyVceO0tGtN3AdokKla51IONS4MLwmLVIZTbppF0MhivUieU0AXRRuHub/exec"
