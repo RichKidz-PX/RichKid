@@ -282,4 +282,8 @@ end)
 GuiService.ErrorMessageChanged:Connect(function() 
     HopServer() 
 end)
-
+game:GetService("CoreGui").RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(child)
+    if child.Name == "ErrorPrompt" then
+        SafeHop()
+    end
+end)
