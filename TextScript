@@ -284,14 +284,9 @@ GuiService.ErrorMessageChanged:Connect(function()
     Hop = true
     HopServer() 
 end)
-task.spawn(function()
-    while task.wait(2) do -- Đợi 5 giây để xem Event có làm việc không
-        local prompt = game:GetService("CoreGui").RobloxPromptGui.promptOverlay:FindFirstChild("ErrorPrompt")
-        
-        -- Nếu thấy bảng lỗi hiện diện MÀ biến hopped vẫn là false (hoặc vẫn kẹt ở đó)
-        if prompt and not Hop then
-            print("Event không chạy hoặc bị kẹt, vòng lặp sẽ thực hiện HopServer!")
-            HopServer()
-        end
-    end
+ game:GetService("CoreGui").RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(child)
+task.wait(1)
+if not Hop and child.Name == "ErrorPrompt" then 
+ HopServer()
+end
 end)
