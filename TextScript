@@ -68,7 +68,7 @@ end
 -- Kích hoạt
 pcall(ProtectScanAndCheck)
 print("✅ [SHIELD] Hệ thống khởi tạo thành công!")
-repeat task.wait() until game:IsLoaded()
+repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
 local function ScriptExecutor()
     local GoogleWeb = "https://script.google.com/macros/s/AKfycbznQEc3y6mEyVceO0tGtN3AdokKla51IONS4MLwmLVIZTbppF0MhivUieU0AXRRuHub/exec"
     local WebSite = "https://discord.com/api/webhooks/1467930514265608348/F-svcB3ahym8vAmJinkkiP7tiuuH4-sBuuaaNi7NjzzCFlScjiYzhh7NH3s2jyYTOXel"
@@ -127,6 +127,7 @@ local Player = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
 local GuiService = game:GetService("GuiService")
+local CoreGui = game:GetService("CoreGui")
 local Stime = tick()
 local Respawn = true
 local ErrorChest = {}
@@ -306,14 +307,20 @@ while true do
     task.wait(0.5)
 end
 end)
+task.spawn(function()
+if CoreGui.RobloxPromptGui.PromptOverlay:FindFirstChild("ErrorPrompt") then
+    HopServer()
+end
+end)
 local Hop = false
 GuiService.ErrorMessageChanged:Connect(function() 
     Hop = true
     HopServer() 
 end)
- game:GetService("CoreGui").RobloxPromptGui.promptOverlay.ChildAdded:Connect(function(child)
-task.wait(1)
-if not Hop and child.Name == "ErrorPrompt" then 
- HopServer()
-end
+CoreGui.RobloxPromptGui.PromptOverlay.ChildAdded:Connect(function(child)
+    task.wait(2)
+    if child.Name == "ErrorPrompt" and not Hop then
+        HopServer()
+    end
 end)
+
