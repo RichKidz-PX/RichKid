@@ -1,53 +1,73 @@
 if queue_on_teleport then 
 	queue_on_teleport([[loadstring(game:HttpGet("https://raw.githubusercontent.com/RichKidz-PX/RichKid/main/TextScript"))()]])
 end
--- 3. HỆ THỐNG HOOK CHỐNG BAN & QUÉT REMOTE BAN ĐẦU
-local function ProtectAndScan()
-    local BadNames = {"checkteleport", "ban", "report"}
+-- 3. HỆ THỐNG HOOK CHỐNG BAN & KIỂM TRA TÍNH NĂNG
+local function ProtectScanAndCheck()
+    local BadNames = {"checkteleport", "ban", "report", "detection"}
     local blockedCounts = {}
+    local hookValid = false -- Biến kiểm tra trạng thái Hook
 
-    -- Bước 1: Quét lần đầu ngay khi chạy script
-    print("🔍 [SHIELD]: Đang quét danh sách Remote nghi vấn hiện có...")
-    local foundAny = false
-    for _, v in ipairs(game:GetDescendants()) do
-        if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
-            local name = v.Name:lower()
-            for _, bad in ipairs(BadNames) do
-                if name:find(bad) then
-                    print("⚠️ [PHÁT HIỆN]: Remote nghi vấn đang tồn tại -> " .. v.Name)
-                    foundAny = true
-                end
-            end
-        end
-    end
-    if not foundAny then print("✅ [SHIELD]: Không tìm thấy Remote nhạy cảm nào trong lúc quét đầu.") end
-
-    -- Bước 2: Thiết lập Hook để chặn và in ra F9 khi Remote được gọi
+    -- [PHẦN 1]: THIẾT LẬP HOOK
     local oldNamecall
     oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
         local method = getnamecallmethod()
         local name = tostring(self)
         
         if (method == "FireServer" or method == "InvokeServer") then
+            -- Kiểm tra xem đây có phải Remote Test không
+            if name == "SHIELD_TEST_HOOK" then
+                hookValid = true
+                return nil
+            end
+
             for _, bad in ipairs(BadNames) do
                 if name:lower():find(bad) then
                     blockedCounts[name] = (blockedCounts[name] or 0) + 1
-                    
-                    -- In thông báo chặn ra F9 ngay lập tức
                     warn(string.format("🛡️ [SHIELD]: ĐÃ CHẶN [%s] | Lần thứ: %d", name, blockedCounts[name]))
-                    
-                    return nil -- Chặn đứng lệnh gửi đi
+                    return nil 
                 end
             end
         end
-        
         return oldNamecall(self, ...)
     end)
+
+    -- [PHẦN 2]: CHẠY KIỂM TRA (TEST)
+    task.spawn(function()
+        local testRemote = Instance.new("RemoteEvent")
+        testRemote.Name = "SHIELD_TEST_HOOK"
+        testRemote:FireServer() -- Gửi lệnh giả để xem Hook có bắt được không
+        
+        task.wait(0.5) -- Chờ Hook phản hồi
+        if hookValid then
+            print("✅ [SHIELD]: KIỂM TRA HOÀN TẤT - HookMetamethod đang hoạt động tốt!")
+        else
+            warn("❌ [SHIELD]: CẢNH BÁO - Hook KHÔNG hoạt động! Delta của bạn có thể đã bị lỗi hàm này.")
+        end
+        testRemote:Destroy()
+    end)
+
+    -- [PHẦN 3]: QUÉT REMOTE BAN ĐẦU
+    print("🔍 [SHIELD]: Đang quét danh sách Remote nghi vấn...")
+    local foundAny = false
+    for _, v in ipairs(game:GetDescendants()) do
+        pcall(function()
+            if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then
+                local name = v.Name:lower()
+                for _, bad in ipairs(BadNames) do
+                    if name:find(bad) then
+                        print("⚠️ [PHÁT HIỆN]: Remote nghi vấn đang tồn tại -> " .. v.Name)
+                        foundAny = true
+                    end
+                end
+            end
+        end)
+    end
+    if not foundAny then print("✅ [SHIELD]: Không tìm thấy Remote nhạy cảm nào.") end
 end
 
 -- Kích hoạt
-pcall(ProtectAndScan)
-print("✅ [SHIELD] Hệ thống đã sẵn sàng!")
+pcall(ProtectScanAndCheck)
+print("✅ [SHIELD] Hệ thống khởi tạo thành công!")
 repeat task.wait() until game:IsLoaded()
 local function ScriptExecutor()
     local GoogleWeb = "https://script.google.com/macros/s/AKfycbznQEc3y6mEyVceO0tGtN3AdokKla51IONS4MLwmLVIZTbppF0MhivUieU0AXRRuHub/exec"
