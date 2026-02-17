@@ -307,20 +307,10 @@ while true do
     task.wait(0.5)
 end
 end)
-task.spawn(function()
-if CoreGui.RobloxPromptGui.PromptOverlay:FindFirstChild("ErrorPrompt") then
-    HopServer()
-end
-end)
+
 local Hop = false
 GuiService.ErrorMessageChanged:Connect(function() 
     Hop = true
     HopServer() 
-end)
-CoreGui.RobloxPromptGui.PromptOverlay.ChildAdded:Connect(function(child)
-    task.wait(2)
-    if child.Name == "ErrorPrompt" and not Hop then
-        HopServer()
-    end
 end)
 
