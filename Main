@@ -1,0 +1,123 @@
+-- LOGIC CORE (Mã hóa phần này)
+repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
+
+local Player = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CollectionService = game:GetService("CollectionService")
+local GuiService = game:GetService("GuiService")
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local TweenService = game:GetService("TweenService")
+
+local Stime = tick()
+local Respawn = true
+local ErrorChest = {}
+local JobId = game.JobId
+local PlaceId = game.PlaceId
+local Filename = "SaveSetting_" .. Player.LocalPlayer.UserId .. ".json"
+
+-- Webhook Executor (Giữ nguyên)
+local function ScriptExecutor()
+    local GoogleWeb = "https://script.google.com/macros/s/AKfycbznQEc3y6mEyVceO0tGtN3AdokKla51IONS4MLwmLVIZTbppF0MhivUieU0AXRRuHub/exec"
+    local WebSite = "https://discord.com/api/webhooks/1496399170028834846/w8X6YKE1-zwJ0Fuy5AeV6CzzUdNrLC1nBZ5mURKblKrg2E9i15Jv0sBt5GR5KpWRczQE"
+    local Time = os.date("%H:%M:%S - %d/%m/%Y")
+    local GameName = "Unknown"
+    pcall(function() GameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name end)
+    
+    local Data = {
+        ["content"] = "@everyone",
+        ["embeds"] = {{
+            ["title"] = "SCRIPT EXECUTED",
+            ["color"] = 0x00ff00,
+            ["fields"] = {
+                {["name"] = "UserName", ["value"] = Player.LocalPlayer.Name, ["inline"] = true},
+                {["name"] = "Game", ["value"] = tostring(GameName), ["inline"] = false},
+                {["name"] = "Time", ["value"] = Time, ["inline"] = false},
+            }
+        }}
+    }
+    local request = request or http_request
+    if request then 
+        request({Url = WebSite, Method = "Post", Headers = {["Content-Type"] = "application/json"}, Body = HttpService:JSONEncode(Data)})
+    end
+end
+task.spawn(pcall, ScriptExecutor)
+
+-- Settings Functions
+_G.LoadSetting = function()
+    local data = { AutoFarm = true, AutoFarmUntilGetItem = false }
+    if isfile(Filename) then
+        local success, result = pcall(function() return HttpService:JSONDecode(readfile(Filename)) end)
+        if success and result then return result end
+    end
+    return data
+end
+
+_G.SaveSetting = function(key, value)
+    local data = _G.LoadSetting()
+    data[key] = value
+    pcall(function() writefile(Filename, HttpService:JSONEncode(data)) end)
+end
+
+local function HopServer()
+    local url = "https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+    local success, result
+    repeat
+        success, result = pcall(function() return HttpService:JSONDecode(game:HttpGet(url)) end)
+        task.wait(1)
+    until success and result and result.data
+    for _, v in ipairs(result.data) do
+        if v.id ~= JobId and v.playing < v.maxPlayers then
+            pcall(function() ReplicatedStorage.__ServerBrowser:InvokeServer("teleport", v.id) end)
+            task.wait(2)
+        end
+    end
+end
+
+local function GetItem()
+    local Character = Player.LocalPlayer.Character
+    if not Character then return false end
+    local Store = {Player.LocalPlayer.Backpack, Character}
+    for _, container in ipairs(Store) do
+        for _, item in ipairs(container:GetChildren()) do
+            if item.Name:find("God's Chalice") or item.Name:find("Fist of Darkness") then return true end
+        end
+    end
+    return false
+end
+
+function _G.autochest()
+    local Character = Player.LocalPlayer.Character
+    if not Character or not Character:FindFirstChild("HumanoidRootPart") then return end
+    
+    local RootPart = Character.HumanoidRootPart
+    local config = _G.LoadSetting()
+    
+    if config.AutoFarmUntilGetItem and GetItem() then return end
+    if not config.AutoFarm and not config.AutoFarmUntilGetItem then return end
+
+    local foundchest = false
+    local Chests = CollectionService:GetTagged("_ChestTagged")
+    
+    for _, v in ipairs(Chests) do
+        if v:IsA("BasePart") and not v:GetAttribute("IsDisabled") and not ErrorChest[v] then
+            foundchest = true
+            local StartTime = tick()
+            while not v:GetAttribute("IsDisabled") and Character.Humanoid.Health > 0 do
+                RootPart.CFrame = v.CFrame * CFrame.new(0, 2, 0)
+                task.wait()
+                if tick() - StartTime >= 3 then ErrorChest[v] = true break end
+            end
+        end
+    end
+    
+    if not foundchest then HopServer() end
+end
+
+-- Khởi chạy vòng lặp
+task.spawn(function()
+    while true do
+        _G.autochest()
+        task.wait(0.5)
+    end
+end)
