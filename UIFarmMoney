@@ -1,17 +1,14 @@
-
 local ScreenGui = Instance.new("ScreenGui")
+local coregui = game:GetService("CoreGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
--- Sử dụng pcall để tránh lỗi quyền truy cập nếu chạy trong Studio
-pcall(function()
-    ScreenGui.Parent = game:GetService("CoreGui")
-end)
+ScreenGui.Parent = game:GetService("CoreGui")
 
 local Frame = Instance.new("Frame")
 Frame.AnchorPoint = Vector2.new(0.50, 0.50)
--- Lưu ý: Size này vẫn đang dùng Offset (700x600), sẽ rất to trên điện thoại
 Frame.Size = UDim2.new(0.00, 700.00, 0.00, 600.00)
 Frame.BorderColor3 = Color3.new(1.00, 0.67, 1.00)
 Frame.Position = UDim2.new(0.50, 0.00, 0.50, 0.00)
 Frame.BorderSizePixel = 0
 Frame.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
 Frame.Parent = ScreenGui
+
