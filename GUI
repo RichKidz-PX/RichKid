@@ -1,0 +1,414 @@
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local MainFrame = Instance.new("Frame")
+MainFrame.AnchorPoint = Vector2.new(0.50, 0.50)
+MainFrame.Size = UDim2.new(0.00, 700.00, 0.00, 600.00)
+MainFrame.BorderColor3 = Color3.new(1.00, 0.67, 1.00)
+MainFrame.Position = UDim2.new(0.5, 0.00, 0.50, 0.00)
+MainFrame.BorderSizePixel = 0
+MainFrame.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0.00, 15.00)
+UICorner.Parent = MainFrame
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.new(0.0, 0.0, 0.0)
+UIStroke.Thickness = 5
+UIStroke.Parent = MainFrame
+
+local Title_Frame = Instance.new("Frame")
+Title_Frame.Name = "Title_Frame"
+Title_Frame.Size = UDim2.new(0.00, 700.00, 0.00, 49.00)
+Title_Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+Title_Frame.BorderSizePixel = 0
+Title_Frame.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+Title_Frame.Parent = MainFrame
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0.00, 15.00)
+UICorner.Parent = Title_Frame
+
+local Delete = Instance.new("TextButton")
+Delete.Name = "Delete"
+Delete.TextWrapped = true
+Delete.TextStrokeTransparency = 0
+Delete.BorderSizePixel = 0
+Delete.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+Delete.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+Delete.TextStrokeColor3 = Color3.new(1.00, 1.00, 1.00)
+Delete.TextSize = 30
+Delete.Size = UDim2.new(0.00, 40.00, 0.00, 25.00)
+Delete.TextColor3 = Color3.new(1.00, 1.00, 0.50)
+Delete.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+Delete.AutoButtonColor = false
+Delete.Text = "x"
+Delete.Position = UDim2.new(0.94, 0.00, 0.00, 0.00)
+Delete.Parent = Title_Frame
+
+local UICorner_1 = Instance.new("UICorner")
+UICorner_1.CornerRadius = UDim.new(0.00, 15.00)
+UICorner_1.Parent = Delete
+
+local UIStroke_1 = Instance.new("UIStroke")
+UIStroke_1.Color = Color3.new(1.00, 1.00, 1.00)
+UIStroke_1.Thickness = 1.5
+UIStroke_1.Parent = Delete
+
+local Minimize = Instance.new("TextButton")
+Minimize.Name = "Minimize"
+Minimize.TextWrapped = true
+Minimize.TextStrokeTransparency = 0
+Minimize.BorderSizePixel = 0
+Minimize.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+Minimize.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Minimize.TextStrokeColor3 = Color3.new(1.00, 1.00, 1.00)
+Minimize.TextSize = 55
+Minimize.Size = UDim2.new(0.00, 40.00, 0.00, 25.00)
+Minimize.TextColor3 = Color3.new(1.00, 1.00, 0.50)
+Minimize.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+Minimize.AutoButtonColor = false
+Minimize.Text = "-"
+Minimize.Position = UDim2.new(0.88, 0.00, 0.00, 0.00)
+Minimize.Parent = Title_Frame
+
+local UICorner_1 = Instance.new("UICorner")
+UICorner_1.CornerRadius = UDim.new(0.00, 15.00)
+UICorner_1.Parent = Minimize
+
+local UIStroke_1 = Instance.new("UIStroke")
+UIStroke_1.Color = Color3.new(1.00, 1.00, 1.00)
+UIStroke_1.Parent = Minimize
+
+local ExitScript = Instance.new("Frame")
+ExitScript.Name = "ExitScript"
+ExitScript.Size = UDim2.new(0.00, 300.00, 0.00, 150.00)
+ExitScript.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+ExitScript.AnchorPoint = Vector2.new(0.50, 0.50)
+ExitScript.Position = UDim2.new(0.5, 0.00, 0.4, 0.00)
+ExitScript.BorderSizePixel = 0
+ExitScript.ZIndex = 10
+ExitScript.BackgroundColor3 = Color3.new(1, 0, 0)
+ExitScript.Parent = MainFrame
+ExitScript.Visible = false
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0.00, 15.00)
+UICorner.Parent = ExitScript
+
+local TextLabel = Instance.new("TextLabel")
+TextLabel.TextWrapped = true
+TextLabel.BorderSizePixel = 0
+TextLabel.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
+TextLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+TextLabel.TextSize = 32
+TextLabel.Size = UDim2.new(0.00, 300.00, 0.00, 80.00)
+TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+TextLabel.Text = "Exit Script? =(("
+TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+TextLabel.BackgroundTransparency = 1
+TextLabel.Parent = ExitScript
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.new(1.00, 1.00, 1.00)
+UIStroke.Parent = TextLabel
+
+local Yes = Instance.new("TextButton")
+Yes.Name = "Yes"
+Yes.BorderSizePixel = 0
+Yes.BackgroundColor3 = Color3.new(1, 0, 0)
+Yes.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+Yes.TextStrokeColor3 = Color3.new(1.00, 1.00, 1.00)
+Yes.TextSize = 30
+Yes.Size = UDim2.new(0.00, 100.00, 0.00, 50.00)
+Yes.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+Yes.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+Yes.AutoButtonColor = false
+Yes.Text = "Yes"
+Yes.Position = UDim2.new(0.52, 0.00, 0.49, 0.00)
+Yes.Parent = ExitScript
+
+local UICorner_1 = Instance.new("UICorner")
+UICorner_1.CornerRadius = UDim.new(0.00, 15.00)
+UICorner_1.Parent = Yes
+
+local UIStroke_1 = Instance.new("UIStroke")
+UIStroke_1.Color = Color3.new(1.00, 1.00, 1.00)
+UIStroke_1.Parent = Yes
+
+local No = Instance.new("TextButton")
+No.Name = "No"
+No.BorderSizePixel = 0
+No.BackgroundColor3 = Color3.new(1, 0, 0)
+No.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+No.TextStrokeColor3 = Color3.new(1.00, 1.00, 1.00)
+No.TextSize = 30
+No.Size = UDim2.new(0.00, 100.00, 0.00, 50.00)
+No.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+No.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+No.AutoButtonColor = false
+No.Text = "No"
+No.Position = UDim2.new(0.16, 0.00, 0.49, 0.00)
+No.Parent = ExitScript
+
+local UICorner_1 = Instance.new("UICorner")
+UICorner_1.CornerRadius = UDim.new(0.00, 15.00)
+UICorner_1.Parent = No
+
+local UIStroke_1 = Instance.new("UIStroke")
+UIStroke_1.Color = Color3.new(1.00, 1.00, 1.00)
+UIStroke_1.Parent = No
+
+local UIStroke_1 = Instance.new("UIStroke")
+UIStroke_1.Thickness = 5
+UIStroke_1.Parent = ExitScript
+
+local ScrollingFrame = Instance.new("ScrollingFrame")
+ScrollingFrame.Active = true
+ScrollingFrame.BorderSizePixel = 0
+ScrollingFrame.CanvasSize = UDim2.new(0.00, 0.00, 0.00, 0.00)
+ScrollingFrame.BorderMode = Enum.BorderMode.Inset
+ScrollingFrame.AnchorPoint = Vector2.new(0.50, 0.50)
+ScrollingFrame.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+ScrollingFrame.AutomaticSize = Enum.AutomaticSize.X
+ScrollingFrame.Size = UDim2.new(0.00, 140.00, 0.00, 520.00)
+ScrollingFrame.BorderColor3 = Color3.new(1.00, 0.67, 0.50)
+ScrollingFrame.ScrollBarThickness = 8
+ScrollingFrame.Position = UDim2.new(0.107, 0.00, 0.564, 0.00)
+ScrollingFrame.Parent = MainFrame
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0.00, 15.00)
+UICorner.Parent = ScrollingFrame
+
+local UIPadding = Instance.new("UIPadding")
+UIPadding.PaddingTop = UDim.new(0.00, 5.00)
+UIPadding.PaddingLeft = UDim.new(0.00, -7.00)
+UIPadding.Parent = ScrollingFrame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Padding = UDim.new(0.00, 20.00)
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.Parent = ScrollingFrame
+
+UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 20)
+end)
+
+local Frame_1 = Instance.new("Frame")
+Frame_1.Name = "Frame_1"
+Frame_1.AnchorPoint = Vector2.new(0.50, 0.50)
+Frame_1.Size = UDim2.new(0.00, 60.00, 0.00, 60.00)
+Frame_1.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+Frame_1.Position = UDim2.new(0.16, 0.00, 0.31, 0.00)
+Frame_1.BorderSizePixel = 0
+Frame_1.BackgroundTransparency = 1
+Frame_1.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
+Frame_1.Parent = ScreenGui
+
+local Toggle = Instance.new("TextButton")
+Toggle.Name = "Toggle"
+Toggle.BorderSizePixel = 0
+Toggle.BackgroundColor3 = Color3.new(1.00, 1.00, 0.50)
+Toggle.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+Toggle.AnchorPoint = Vector2.new(0.50, 0.50)
+Toggle.TextSize = 14
+Toggle.Size = UDim2.new(0.00, 60.00, 0.00, 60.00)
+Toggle.TextColor3 = Color3.new(0.00, 0.00, 0.00)
+Toggle.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+Toggle.AutoButtonColor = false
+Toggle.AutomaticSize = Enum.AutomaticSize.X
+Toggle.Position = UDim2.new(0.50, 0.00, 0.50, 0.00)
+Toggle.Parent = Frame_1
+
+local UICorner_1 = Instance.new("UICorner")
+UICorner_1.CornerRadius = UDim.new(0.00, 60.00)
+UICorner_1.Parent = Toggle
+
+local ImageLabel = Instance.new("ImageLabel")
+ImageLabel.BorderSizePixel = 0
+ImageLabel.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
+ImageLabel.Image = "rbxassetid://76223111729256"
+ImageLabel.Size = UDim2.new(1.00, 0.00, 1.00, 0.00)
+ImageLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+ImageLabel.Parent = Toggle
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0.00, 60.00)
+UICorner.Parent = ImageLabel
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.new(1.00, 1.00, 0.50)
+UIStroke.Parent = ImageLabel
+
+local TweenService = game:GetService("TweenService")
+local dragframe = false
+local deleteframe = false
+local Function_Frame = {}
+local Library = {
+	Menu= {}
+}
+
+local function MoveFrame(target, MainFrame)
+    local dragging , startInput, startPos
+    target.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        startInput = input.Position
+        startPos = MainFrame.Position
+    end
+    end)
+    target.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+        task.delay(0.1, function()
+            dragframe = false
+        end)
+    end
+    end)
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - startInput
+        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        if delta.Magnitude > 5 then
+            dragframe = true
+        end 
+    end
+    end)
+end
+
+MoveFrame(Title_Frame, MainFrame)
+MoveFrame(Toggle, Frame_1)
+
+local function Turnoff_Frame(toggle, frame)
+    local tweeninfo = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    toggle.MouseButton1Click:Connect(function()
+        local position = frame.Position
+        local low_position = UDim2.new(position.X.Scale, position.X.Offset, position.Y.Scale + 0.05, position.Y.Offset)
+        if dragframe then return end
+        frame.Visible = not frame.Visible
+        if frame.Visible then
+            frame.Position = low_position
+            TweenService:Create(frame, tweeninfo, {Position = position}):Play()
+        end
+    end)
+end
+
+Turnoff_Frame(Toggle, MainFrame)
+Turnoff_Frame(Minimize, MainFrame)
+Turnoff_Frame(Delete, ExitScript)
+
+No.MouseButton1Click:Connect(function()
+    ExitScript.Visible = false
+end)
+
+Yes.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+local function Bobbing(button, weight)
+    local size = button.TextSize
+    local high_size = size + weight
+    local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    button.MouseEnter:Connect(function()
+        TweenService:Create(button, tweenInfo, {TextSize = high_size}):Play()
+    end)
+    button.MouseLeave:Connect(function()
+        TweenService:Create(button, tweenInfo, {TextSize = size}):Play()
+    end)
+end
+
+Bobbing(Minimize, 15)
+Bobbing(Delete, 7)
+Bobbing(No, 5)
+Bobbing(Yes, 5)
+
+local function Bobbing_Toggle(button)
+    local size = Frame_1.Size
+    local high_size = UDim2.new(size.X.Scale, size.X.Offset + 7, size.Y.Scale, size.Y.Offset + 7)
+    local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    button.MouseEnter:Connect(function()
+        TweenService:Create(button, tweenInfo, {Size = high_size}):Play()
+    end)
+    button.MouseLeave:Connect(function()
+        TweenService:Create(button, tweenInfo, {Size = size}):Play()
+    end)
+end
+
+Bobbing_Toggle(Toggle)
+
+function Library.Menu:Create_Button(text, value)
+	local List_Frame = Instance.new("Frame")
+	List_Frame.Size = UDim2.new(0.00, 110.00, 0.00, 40.00)
+	List_Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	List_Frame.BorderSizePixel = 0
+	List_Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
+	List_Frame.Position = UDim2.new(0.05, 0.00, 0.07, 0.00)
+	List_Frame.Parent = ScrollingFrame
+
+	local UICorner_1 = Instance.new("UICorner")
+	UICorner_1.Parent = List_Frame
+
+	local UIStroke = Instance.new("UIStroke")
+	UIStroke.Thickness = 4.0
+	UIStroke.Parent = List_Frame
+
+	local TextButton = Instance.new("TextButton")
+	TextButton.BorderSizePixel = 0
+	TextButton.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
+	TextButton.AutoButtonColor = false
+	TextButton.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	TextButton.TextStrokeColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextButton.TextSize = 20
+	TextButton.Size = UDim2.new(0.00, 110.00, 0.00, 40.00)
+	TextButton.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextButton.Text = text
+	TextButton.Parent = List_Frame
+
+	local UICorner = Instance.new("UICorner")
+	UICorner.Parent = TextButton
+	
+	local ScrollingFrame = Instance.new("ScrollingFrame")
+	ScrollingFrame.Active = true
+	ScrollingFrame.BorderSizePixel = 0
+	ScrollingFrame.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+	ScrollingFrame.Size = UDim2.new(0.00, 555.00, 0.00, 520.00)
+	ScrollingFrame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	ScrollingFrame.ScrollBarThickness = 8
+	ScrollingFrame.Position = UDim2.new(0.207, 0.00, 0.131, 0.00)
+	ScrollingFrame.Visible = value
+	ScrollingFrame.Parent = MainFrame
+
+	local UICorner = Instance.new("UICorner")
+	UICorner.CornerRadius = UDim.new(0.00, 15.00)
+	UICorner.Parent = ScrollingFrame
+	
+	local size = TextButton.TextSize
+	local frame_size = List_Frame.Size
+	local high_size = size + 3
+	local high_frame_size = UDim2.new(frame_size.X.Scale, frame_size.X.Offset + 3, frame_size.Y.Scale, frame_size.Y.Offset + 3)
+	local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+	TextButton.MouseEnter:Connect(function()
+		TweenService:Create(TextButton, tweenInfo, {TextSize = high_size}):Play()
+		TweenService:Create(List_Frame, tweenInfo, {Size = high_frame_size}):Play()
+	end)
+	TextButton.MouseLeave:Connect(function()
+		TweenService:Create(TextButton, tweenInfo, {TextSize = size}):Play()
+		TweenService:Create(List_Frame, tweenInfo, {Size = frame_size}):Play()
+	end)
+	
+	table.insert(Function_Frame, ScrollingFrame)
+	TextButton.MouseButton1Click:Connect(function()
+		for i, v in pairs(Function_Frame) do
+			v.Visible = false
+		end
+		ScrollingFrame.Visible = true
+	end)
+end
+
+return Library.Menu
