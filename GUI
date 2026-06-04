@@ -427,70 +427,109 @@ function Library.Menu:Create_Button(text, value)
 	return ScrollingFrame
 end
 
+-- Định nghĩa TweenService (nếu bạn chưa có ở đầu script)
+
+local HttpService = game:GetService("HttpService") -- Dùng để chuyển đổi dữ liệu thành chuỗi text
+
 function Library.Menu:Create_MainButton(frame, callback)
-	local Status = false
+    -- Tên file để lưu trạng thái, bạn có thể đổi tên tùy ý cho mỗi nút
+    local FILE_NAME = "AutoFarm_Status.txt" 
+    
+    -- Hàm đọc trạng thái cũ đã lưu
+    local function loadStatus()
+        if isfile and isfile(FILE_NAME) then
+            local content = readfile(FILE_NAME)
+            return content == "true" -- Trả về true nếu file ghi "true", ngược lại là false
+        end
+        return false -- Mặc định là false nếu chưa có file lưu
+    end
 
-	local Frame = Instance.new("Frame")
-	Frame.Size = UDim2.new(0.00, 500.00, 0.00, 40.00)
-	Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-	Frame.Position = UDim2.new(0.05, 0.00, 0.03, 0.00)
-	Frame.BorderSizePixel = 0
-	Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
-	Frame.Parent = frame
+    -- Hàm lưu trạng thái mới
+    local function saveStatus(value)
+        if writefile then
+            writefile(FILE_NAME, tostring(value))
+        end
+    end
 
-	local UICorner = Instance.new("UICorner")
-	UICorner.Parent = Frame
+    -- Đọc trạng thái cũ ngay khi khởi tạo nút
+    local Status = loadStatus()
 
-	local TextLabel = Instance.new("TextLabel")
-	TextLabel.BorderSizePixel = 0
-	TextLabel.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
-	TextLabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-	TextLabel.TextSize = 24
-	TextLabel.Size = UDim2.new(0.00, 165.00, 0.00, 40.00)
-	TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
-	TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-	TextLabel.Text = "Auto Farm"
-	TextLabel.BackgroundTransparency = 1
-	TextLabel.Parent = Frame
+    local Frame = Instance.new("Frame")
+    Frame.Size = UDim2.new(0.00, 500.00, 0.00, 40.00)
+    Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+    Frame.Position = UDim2.new(0.05, 0.00, 0.03, 0.00)
+    Frame.BorderSizePixel = 0
+    Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
+    Frame.Parent = frame
 
-	local TextButton = Instance.new("TextButton")
-	TextButton.BorderSizePixel = 0
-	TextButton.BackgroundColor3 = Status and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
-	TextButton.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-	TextButton.TextSize = 14
-	TextButton.Size = UDim2.new(0.00, 80.00, 0.00, 30.00)
-	TextButton.TextColor3 = Color3.new(0.00, 0.00, 0.00)
-	TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-	TextButton.Text = ""
-	TextButton.Position = UDim2.new(0.65, 0.00, 0.12, 0.00)
-	TextButton.Parent = Frame
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = Frame
 
-	local Frame_1 = Instance.new("Frame")
-	Frame_1.Size = UDim2.new(0.00, 40.00, 0.00, 30.00)
-	Frame_1.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-	Frame_1.BorderSizePixel = 0
-	Frame_1.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
-	Frame_1.Position = Status and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
-	Frame_1.Parent = TextButton
+    local TextLabel = Instance.new("TextLabel")
+    TextLabel.BorderSizePixel = 0
+    TextLabel.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+    TextLabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    TextLabel.TextSize = 24
+    TextLabel.Size = UDim2.new(0.00, 165.00, 0.00, 40.00)
+    TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+    TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+    TextLabel.Text = "Auto Farm"
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.Parent = Frame
 
-	local UICorner_1 = Instance.new("UICorner")
-	UICorner_1.Parent = Frame_1
+    local TextButton = Instance.new("TextButton")
+    TextButton.BorderSizePixel = 0
+    -- Cập nhật màu nền dựa trên trạng thái đã lưu
+    TextButton.BackgroundColor3 = Status and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
+    TextButton.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    TextButton.TextSize = 14
+    TextButton.Size = UDim2.new(0.00, 80.00, 0.00, 30.00)
+    TextButton.TextColor3 = Color3.new(0.00, 0.00, 0.00)
+    TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+    TextButton.Text = ""
+    TextButton.Position = UDim2.new(0.65, 0.00, 0.12, 0.00)
+    TextButton.Parent = Frame
 
-	local UICorner_1 = Instance.new("UICorner")
-	UICorner_1.Parent = TextButton
+    local Frame_1 = Instance.new("Frame")
+    Frame_1.Size = UDim2.new(0.00, 40.00, 0.00, 30.00)
+    Frame_1.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+    Frame_1.BorderSizePixel = 0
+    Frame_1.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
+    -- Cập nhật vị trí thanh gạt dựa trên trạng thái đã lưu
+    Frame_1.Position = Status and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
+    Frame_1.Parent = TextButton
 
-	local TweenInfo = TweenInfo.new(0.20, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-	TextButton.MouseButton1Click:Connect(function()
-		Status = not Status
-		local BackgroundColor = Status and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
-		local Position = Status and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
-		TweenService:Create(TextButton, TweenInfo, {BackgroundColor3 = BackgroundColor}):Play()
-		TweenService:Create(Frame_1, TweenInfo, {Position = Position}):Play()
-		
-		if Status then 
-			callback()
-		end
-	end)
+    local UICorner_1 = Instance.new("UICorner")
+    UICorner_1.Parent = Frame_1
+
+    local UICorner_2 = Instance.new("UICorner") -- Đổi tên từ UICorner_1 tránh trùng lặp
+    UICorner_2.Parent = TextButton
+
+    local TweenInfo = TweenInfo.new(0.20, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    
+    -- Xử lý khi người dùng click bằng tay
+    TextButton.MouseButton1Click:Connect(function()
+        Status = not Status
+        saveStatus(Status) -- Lưu lại trạng thái mới vào file
+        
+        local BackgroundColor = Status and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
+        local Position = Status and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
+        
+        TweenService:Create(TextButton, TweenInfo, {BackgroundColor3 = BackgroundColor}):Play()
+        TweenService:Create(Frame_1, TweenInfo, {Position = Position}):Play()
+        
+        -- Kích hoạt hoặc dừng callback tùy thuộc vào logic của bạn
+        -- (Thường callback sẽ nhận vào biến Status để biết là nên Bật hay Tắt chức năng)
+        callback(Status) 
+    end)
+
+    -- TỰ ĐỘNG CHẠY KHI EXECUTE: Nếu trạng thái cũ lưu là true, tự động gọi callback luôn
+    if Status then
+        -- Dùng task.spawn để tránh làm nghẽn quá trình tạo UI nếu hàm callback bị delay/vòng lặp vô tận
+        task.spawn(function()
+            callback(true)
+        end)
+    end
 end
 
 return Library.Menu
