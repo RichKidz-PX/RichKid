@@ -246,12 +246,17 @@ UIStroke.Color = Color3.new(1.00, 1.00, 0.50)
 UIStroke.Parent = ImageLabel
 
 local TweenService = game:GetService("TweenService")
+local VirtualUser = game:GetService("VirtualUser")
 local dragframe = false
 local deleteframe = false
 local Function_Frame = {}
 local Library = {
 	Menu= {}
 }
+
+game.Players.LocalPlayer.Idled:Connect(function()
+	VirtualUser:ClickButton2(Vector2.new(0,0))
+end)
 
 local function MoveFrame(target, MainFrame)
     local dragging , startInput, startPos
@@ -372,7 +377,21 @@ function Library.Menu:Create_Button(text, value)
 
 	local UICorner = Instance.new("UICorner")
 	UICorner.Parent = TextButton
-	
+
+	local size = TextButton.TextSize
+	local frame_size = List_Frame.Size
+	local high_size = size + 3
+	local high_frame_size = UDim2.new(frame_size.X.Scale, frame_size.X.Offset + 3, frame_size.Y.Scale, frame_size.Y.Offset + 3)
+	local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+	TextButton.MouseEnter:Connect(function()
+		TweenService:Create(TextButton, tweenInfo, {TextSize = high_size}):Play()
+		TweenService:Create(List_Frame, tweenInfo, {Size = high_frame_size}):Play()
+	end)
+	TextButton.MouseLeave:Connect(function()
+		TweenService:Create(TextButton, tweenInfo, {TextSize = size}):Play()
+		TweenService:Create(List_Frame, tweenInfo, {Size = frame_size}):Play()
+	end)
+
 	local ScrollingFrame = Instance.new("ScrollingFrame")
 	ScrollingFrame.Active = true
 	ScrollingFrame.BorderSizePixel = 0
@@ -388,18 +407,14 @@ function Library.Menu:Create_Button(text, value)
 	UICorner.CornerRadius = UDim.new(0.00, 15.00)
 	UICorner.Parent = ScrollingFrame
 	
-	local size = TextButton.TextSize
-	local frame_size = List_Frame.Size
-	local high_size = size + 3
-	local high_frame_size = UDim2.new(frame_size.X.Scale, frame_size.X.Offset + 3, frame_size.Y.Scale, frame_size.Y.Offset + 3)
-	local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-	TextButton.MouseEnter:Connect(function()
-		TweenService:Create(TextButton, tweenInfo, {TextSize = high_size}):Play()
-		TweenService:Create(List_Frame, tweenInfo, {Size = high_frame_size}):Play()
-	end)
-	TextButton.MouseLeave:Connect(function()
-		TweenService:Create(TextButton, tweenInfo, {TextSize = size}):Play()
-		TweenService:Create(List_Frame, tweenInfo, {Size = frame_size}):Play()
+	local UIListLayout = Instance.new("UIListLayout")
+	UIListLayout.Padding = UDim.new(0.00, 20.00)
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout.Parent = ScrollingFrame
+
+	UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    	ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 20)
 	end)
 	
 	table.insert(Function_Frame, ScrollingFrame)
@@ -408,6 +423,73 @@ function Library.Menu:Create_Button(text, value)
 			v.Visible = false
 		end
 		ScrollingFrame.Visible = true
+	end)
+	return ScrollingFrame
+end
+
+function Library.Menu:Create_MainButton(frame, callback)
+	local Status = false
+
+	local Frame = Instance.new("Frame")
+	Frame.Size = UDim2.new(0.00, 500.00, 0.00, 40.00)
+	Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	Frame.Position = UDim2.new(0.05, 0.00, 0.03, 0.00)
+	Frame.BorderSizePixel = 0
+	Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
+	Frame.Parent = frame
+
+	local UICorner = Instance.new("UICorner")
+	UICorner.Parent = Frame
+
+	local TextLabel = Instance.new("TextLabel")
+	TextLabel.BorderSizePixel = 0
+	TextLabel.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+	TextLabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+	TextLabel.TextSize = 24
+	TextLabel.Size = UDim2.new(0.00, 165.00, 0.00, 40.00)
+	TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextLabel.Text = "Auto Farm"
+	TextLabel.BackgroundTransparency = 1
+	TextLabel.Parent = Frame
+
+	local TextButton = Instance.new("TextButton")
+	TextButton.BorderSizePixel = 0
+	TextButton.BackgroundColor3 = Status and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
+	TextButton.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+	TextButton.TextSize = 14
+	TextButton.Size = UDim2.new(0.00, 80.00, 0.00, 30.00)
+	TextButton.TextColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextButton.Text = ""
+	TextButton.Position = UDim2.new(0.65, 0.00, 0.12, 0.00)
+	TextButton.Parent = Frame
+
+	local Frame_1 = Instance.new("Frame")
+	Frame_1.Size = UDim2.new(0.00, 40.00, 0.00, 30.00)
+	Frame_1.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	Frame_1.BorderSizePixel = 0
+	Frame_1.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
+	Frame_1.Position = Status and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
+	Frame_1.Parent = TextButton
+
+	local UICorner_1 = Instance.new("UICorner")
+	UICorner_1.Parent = Frame_1
+
+	local UICorner_1 = Instance.new("UICorner")
+	UICorner_1.Parent = TextButton
+
+	local TweenInfo = TweenInfo.new(0.20, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	TextButton.MouseButton1Click:Connect(function()
+		Status = not Status
+		local BackgroundColor = Status and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
+		local Position = Status and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
+		TweenService:Create(TextButton, TweenInfo, {BackgroundColor3 = BackgroundColor}):Play()
+		TweenService:Create(Frame_1, TweenInfo, {Position = Position}):Play()
+		
+		if Status then 
+			callback()
+		end
 	end)
 end
 
