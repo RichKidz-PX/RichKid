@@ -259,7 +259,7 @@ local Library = {
 local Config = {
     AutoFarmStatus = false
 }
-local ConfigFileName = "MenuConfig.json"
+local ConfigFileName = "MenConfig.json"
 
 -- Hàm Lưu file cấu hình
 local function SaveConfig()
