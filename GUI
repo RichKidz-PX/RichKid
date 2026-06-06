@@ -247,54 +247,15 @@ UIStroke.Parent = ImageLabel
 
 local TweenService = game:GetService("TweenService")
 local VirtualUser = game:GetService("VirtualUser")
-local HttpService = game:GetService("HttpService") -- Thêm HttpService để chuyển đổi sang JSON
+local HttpService = game:GetService("HttpService")
 local dragframe = false
 local deleteframe = false
 local Function_Frame = {}
-local Library = {
-    Menu= {}
-}
-
--- Bảng chứa giá trị cấu hình cần lưu trữ
-local Config = {
-    AutoFarmStatus = false
-}
-local ConfigFileName = "MenConfig.json"
-
--- Hàm Lưu file cấu hình
-local function SaveConfig()
-    local success, jsonStr = pcall(function()
-        return HttpService:JSONEncode(Config)
-    end)
-    if success and writefile then
-        writefile(ConfigFileName, jsonStr)
-    end
-end
-
--- Hàm Tải file cấu hình cũ (nếu có)
-local function LoadConfig()
-    if readfile and isfile and isfile(ConfigFileName) then
-        local success, jsonStr = pcall(function()
-            return readfile(ConfigFileName)
-        end)
-        if success then
-            local successData, data = pcall(function()
-                return HttpService:JSONDecode(jsonStr)
-            end)
-            if successData and type(data) == "table" then
-                for k, v in pairs(data) do
-                    Config[k] = v
-                end
-            end
-        end
-    end
-end
-
--- Chạy hàm tải cấu hình ngay khi bật script
-LoadConfig()
+local Library = {}
+local Filename = "SaveConFig_" .. game.Players.LocalPlayer.UserId .. ".json"
 
 game.Players.LocalPlayer.Idled:Connect(function()
-    VirtualUser:ClickButton2(Vector2.new(0,0))
+	VirtualUser:ClickButton2(Vector2.new(0,0))
 end)
 
 local function MoveFrame(target, MainFrame)
@@ -385,164 +346,171 @@ end
 
 Bobbing_Toggle(Toggle)
 
-function Library.Menu:Create_Button(text, value)
-    local List_Frame = Instance.new("Frame")
-    List_Frame.Size = UDim2.new(0.00, 110.00, 0.00, 40.00)
-    List_Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-    List_Frame.BorderSizePixel = 0
-    List_Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
-    List_Frame.Position = UDim2.new(0.05, 0.00, 0.07, 0.00)
-    List_Frame.Parent = ScrollingFrame
+function Library:Create_Button(text, value)
+	local List_Frame = Instance.new("Frame")
+	List_Frame.Size = UDim2.new(0.00, 110.00, 0.00, 40.00)
+	List_Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	List_Frame.BorderSizePixel = 0
+	List_Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
+	List_Frame.Position = UDim2.new(0.05, 0.00, 0.07, 0.00)
+	List_Frame.Parent = ScrollingFrame
 
-    local UICorner_1 = Instance.new("UICorner")
-    UICorner_1.Parent = List_Frame
+	local UICorner_1 = Instance.new("UICorner")
+	UICorner_1.Parent = List_Frame
 
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Thickness = 4.0
-    UIStroke.Parent = List_Frame
+	local UIStroke = Instance.new("UIStroke")
+	UIStroke.Thickness = 4.0
+	UIStroke.Parent = List_Frame
 
-    local TextButton = Instance.new("TextButton")
-    TextButton.BorderSizePixel = 0
-    TextButton.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
-    TextButton.AutoButtonColor = false
-    TextButton.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-    TextButton.TextStrokeColor3 = Color3.new(1.00, 1.00, 1.00)
-    TextButton.TextSize = 20
-    TextButton.Size = UDim2.new(0.00, 110.00, 0.00, 40.00)
-    TextButton.TextColor3 = Color3.new(1.00, 1.00, 1.00)
-    TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-    TextButton.Text = text
-    TextButton.Parent = List_Frame
+	local TextButton = Instance.new("TextButton")
+	TextButton.BorderSizePixel = 0
+	TextButton.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
+	TextButton.AutoButtonColor = false
+	TextButton.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	TextButton.TextStrokeColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextButton.TextSize = 20
+	TextButton.Size = UDim2.new(0.00, 110.00, 0.00, 40.00)
+	TextButton.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextButton.Text = text
+	TextButton.Parent = List_Frame
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.Parent = TextButton
+	local UICorner = Instance.new("UICorner")
+	UICorner.Parent = TextButton
 
-    local size = TextButton.TextSize
-    local frame_size = List_Frame.Size
-    local high_size = size + 3
-    local high_frame_size = UDim2.new(frame_size.X.Scale, frame_size.X.Offset + 3, frame_size.Y.Scale, frame_size.Y.Offset + 3)
-    local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-    TextButton.MouseEnter:Connect(function()
-        TweenService:Create(TextButton, tweenInfo, {TextSize = high_size}):Play()
-        TweenService:Create(List_Frame, tweenInfo, {Size = high_frame_size}):Play()
-    end)
-    TextButton.MouseLeave:Connect(function()
-        TweenService:Create(TextButton, tweenInfo, {TextSize = size}):Play()
-        TweenService:Create(List_Frame, tweenInfo, {Size = frame_size}):Play()
-    end)
+	local size = TextButton.TextSize
+	local frame_size = List_Frame.Size
+	local high_size = size + 3
+	local high_frame_size = UDim2.new(frame_size.X.Scale, frame_size.X.Offset + 3, frame_size.Y.Scale, frame_size.Y.Offset + 3)
+	local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+	TextButton.MouseEnter:Connect(function()
+		TweenService:Create(TextButton, tweenInfo, {TextSize = high_size}):Play()
+		TweenService:Create(List_Frame, tweenInfo, {Size = high_frame_size}):Play()
+	end)
+	TextButton.MouseLeave:Connect(function()
+		TweenService:Create(TextButton, tweenInfo, {TextSize = size}):Play()
+		TweenService:Create(List_Frame, tweenInfo, {Size = frame_size}):Play()
+	end)
 
-    local ScrollingFrame = Instance.new("ScrollingFrame")
-    ScrollingFrame.Active = true
-    ScrollingFrame.BorderSizePixel = 0
-    ScrollingFrame.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
-    ScrollingFrame.Size = UDim2.new(0.00, 555.00, 0.00, 520.00)
-    ScrollingFrame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-    ScrollingFrame.ScrollBarThickness = 8
-    ScrollingFrame.Position = UDim2.new(0.207, 0.00, 0.131, 0.00)
-    ScrollingFrame.Visible = value
-    ScrollingFrame.Parent = MainFrame
+	local ScrollingFrame = Instance.new("ScrollingFrame")
+	ScrollingFrame.Active = true
+	ScrollingFrame.BorderSizePixel = 0
+	ScrollingFrame.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+	ScrollingFrame.Size = UDim2.new(0.00, 555.00, 0.00, 520.00)
+	ScrollingFrame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	ScrollingFrame.ScrollBarThickness = 8
+	ScrollingFrame.Position = UDim2.new(0.207, 0.00, 0.131, 0.00)
+	ScrollingFrame.Visible = value
+	ScrollingFrame.Parent = MainFrame
 
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0.00, 15.00)
-    UICorner.Parent = ScrollingFrame
-    
-    local UIListLayout = Instance.new("UIListLayout")
-    UIListLayout.Padding = UDim.new(0.00, 20.00)
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    UIListLayout.Parent = ScrollingFrame
+	local UICorner = Instance.new("UICorner")
+	UICorner.CornerRadius = UDim.new(0.00, 15.00)
+	UICorner.Parent = ScrollingFrame
+	
+	local UIListLayout = Instance.new("UIListLayout")
+	UIListLayout.Padding = UDim.new(0.00, 20.00)
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout.Parent = ScrollingFrame
 
-    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 20)
-    end)
-    
-    table.insert(Function_Frame, ScrollingFrame)
-    TextButton.MouseButton1Click:Connect(function()
-        for i, v in pairs(Function_Frame) do
-            v.Visible = false
-        end
-        ScrollingFrame.Visible = true
-    end)
-    return ScrollingFrame
+	UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    	ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 20)
+	end)
+	
+	table.insert(Function_Frame, ScrollingFrame)
+	TextButton.MouseButton1Click:Connect(function()
+		for i, v in pairs(Function_Frame) do
+			v.Visible = false
+		end
+		ScrollingFrame.Visible = true
+	end)
+	return ScrollingFrame
 end
 
-function Library.Menu:Create_MainButton(frame, callback)
-    -- Gán Status ban đầu từ giá trị đã tải trong file Config
-    local Status = Config.AutoFarmStatus
-
-    local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(0.00, 500.00, 0.00, 40.00)
-    Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-    Frame.Position = UDim2.new(0.05, 0.00, 0.03, 0.00)
-    Frame.BorderSizePixel = 0
-    Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
-    Frame.Parent = frame
-
-    local UICorner = Instance.new("UICorner")
-    UICorner.Parent = Frame
-
-    local TextLabel = Instance.new("TextLabel")
-    TextLabel.BorderSizePixel = 0
-    TextLabel.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
-    TextLabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    TextLabel.TextSize = 24
-    TextLabel.Size = UDim2.new(0.00, 165.00, 0.00, 40.00)
-    TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
-    TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-    TextLabel.Text = "Auto Farm"
-    TextLabel.BackgroundTransparency = 1
-    TextLabel.Parent = Frame
-
-    local TextButton = Instance.new("TextButton")
-    TextButton.BorderSizePixel = 0
-    -- Thiết lập giao diện nút dựa trên trạng thái đã lưu
-    TextButton.BackgroundColor3 = Status and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
-    TextButton.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-    TextButton.TextSize = 14
-    TextButton.Size = UDim2.new(0.00, 80.00, 0.00, 30.00)
-    TextButton.TextColor3 = Color3.new(0.00, 0.00, 0.00)
-    TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-    TextButton.AutoButtonColor = false
-    TextButton.Text = ""
-    TextButton.Position = UDim2.new(0.65, 0.00, 0.12, 0.00)
-    TextButton.Parent = Frame
-
-    local Frame_1 = Instance.new("Frame")
-    Frame_1.Size = UDim2.new(0.00, 40.00, 0.00, 30.00)
-    Frame_1.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-    Frame_1.BorderSizePixel = 0
-    Frame_1.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
-    -- Thiết lập vị trí cục tròn gạt dựa trên trạng thái đã lưu
-    Frame_1.Position = Status and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
-    Frame_1.Parent = TextButton
-
-    local UICorner_1 = Instance.new("UICorner")
-    UICorner_1.Parent = Frame_1
-
-    local UICorner_2 = Instance.new("UICorner")
-    UICorner_2.Parent = TextButton
-
-    local TweenInfoData = TweenInfo.new(0.20, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    
-    -- Nếu trạng thái lưu cũ là bật (true), tự động chạy chức năng callback() ngay
-    if Status then
-        task.spawn(callback)
-    end
-
-    TextButton.MouseButton1Click:Connect(function()
-        Status = not Status
-        Config.AutoFarmStatus = Status -- Cập nhật trạng thái vào cấu hình chung
-        SaveConfig() -- Tự động lưu cấu hình xuống file máy tính
-
-        local BackgroundColor = Status and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
-        local Position = Status and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
-        TweenService:Create(TextButton, TweenInfoData, {BackgroundColor3 = BackgroundColor}):Play()
-        TweenService:Create(Frame_1, TweenInfoData, {Position = Position}):Play()
-        
-        if Status then 
-            callback()
-        end
-    end)
+function Readfile(name)
+	local data ={[name] = false }
+	if isfile(Filename) then
+		local result = HttpService:JSONDecode(readfile(Filename))
+		return result
+	end
+	return data
 end
 
-return Library.Menu
+function Writefile(name, boolean)
+    local data = Readfile(name)
+	data[name] = boolean
+	writefile(Filename, HttpService:JSONEncode(data))
+end
+
+function Library:Create_MainButton(frame,config_name,boolean,callback)
+
+	local Config = Readfile(config_name)
+	local boo = Config[config_name] 
+
+	local Frame = Instance.new("Frame")
+	Frame.Size = UDim2.new(0.00, 500.00, 0.00, 40.00)
+	Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	Frame.Position = UDim2.new(0.05, 0.00, 0.03, 0.00)
+	Frame.BorderSizePixel = 0
+	Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
+	Frame.Parent = frame
+
+	local UICorner = Instance.new("UICorner")
+	UICorner.Parent = Frame
+
+	local TextLabel = Instance.new("TextLabel")
+	TextLabel.BorderSizePixel = 0
+	TextLabel.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+	TextLabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+	TextLabel.TextSize = 24
+	TextLabel.Size = UDim2.new(0.00, 165.00, 0.00, 40.00)
+	TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextLabel.Text = "Auto Farm"
+	TextLabel.BackgroundTransparency = 1
+	TextLabel.Parent = Frame
+
+	local TextButton = Instance.new("TextButton")
+	TextButton.BorderSizePixel = 0
+	TextButton.BackgroundColor3 = boolean and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
+	TextButton.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+	TextButton.TextSize = 14
+	TextButton.Size = UDim2.new(0.00, 80.00, 0.00, 30.00)
+	TextButton.TextColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextButton.AutoButtonColor = false
+	TextButton.Text = ""
+	TextButton.Position = UDim2.new(0.65, 0.00, 0.12, 0.00)
+	TextButton.Parent = Frame
+
+	local Frame_1 = Instance.new("Frame")
+	Frame_1.Size = UDim2.new(0.00, 40.00, 0.00, 30.00)
+	Frame_1.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	Frame_1.BorderSizePixel = 0
+	Frame_1.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
+	Frame_1.Position = boolean and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
+	Frame_1.Parent = TextButton
+
+	local UICorner_1 = Instance.new("UICorner")
+	UICorner_1.Parent = Frame_1
+
+	local UICorner_1 = Instance.new("UICorner")
+	UICorner_1.Parent = TextButton
+
+	local TweenInfo = TweenInfo.new(0.20, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	TextButton.MouseButton1Click:Connect(function()
+		boolean = not boolean
+		local BackgroundColor = boolean and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
+		local Position = boolean and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
+		TweenService:Create(TextButton, TweenInfo, {BackgroundColor3 = BackgroundColor}):Play()
+		TweenService:Create(Frame_1, TweenInfo, {Position = Position}):Play()
+		Writefile(config_name, boolean)
+
+		if boolean then 
+			callback()
+		end
+	end)
+end
+
+return Library
+
