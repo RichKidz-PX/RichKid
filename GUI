@@ -349,7 +349,7 @@ Bobbing_Toggle(Toggle)
 function Readfile(name)
 	local data = {}
 	local result = function()
-	return HttpService:JSONDecode(Filename)
+	return HttpService:JSONDecode(readfile(Filename))
 	end
 	if result and type(result) == "table" then
 		return data
