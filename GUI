@@ -446,7 +446,7 @@ function Library:Create_Button(text, value)
 	return ScrollingFrame
 end
 
-function Library:Create_MainButton(frame,config_name,boolean, callback)
+function Library:Create_MainButton(frame,title,config_name,boolean, callback)
 	local data = Readfile()
 	if data[config_name] ~= nil then
 		boolean = data[config_name]
@@ -471,7 +471,7 @@ function Library:Create_MainButton(frame,config_name,boolean, callback)
 	TextLabel.Size = UDim2.new(0.00, 165.00, 0.00, 40.00)
 	TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
 	TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
-	TextLabel.Text = "Auto Farm"
+	TextLabel.Text = title
 	TextLabel.BackgroundTransparency = 1
 	TextLabel.Parent = Frame
 
