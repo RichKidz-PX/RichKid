@@ -352,7 +352,7 @@ function Readfile(name)
 	return HttpService:JSONDecode(readfile(Filename))
 	end
 	if result and type(result) == "table" then
-		return data
+		return result
 	end
 	return data
 end
