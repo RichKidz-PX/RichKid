@@ -360,7 +360,7 @@ end
 function Writefile(name,boolean)
 	local data = Readfile()
 	data[name] = boolean
-	Writefile(Filename, HttpService:JSONEncode(data))
+	writefile(Filename, HttpService:JSONEncode(data))
 end
 
 function Library:Create_Button(text, value)
