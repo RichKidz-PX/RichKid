@@ -252,7 +252,7 @@ local dragframe = false
 local deleteframe = false
 local Function_Frame = {}
 local Library = {}
-local Filename = "SaveConFig_" .. game.Players.LocalPlayer.UserId .. ".json"
+local Filename = "SaveConfig_" .. Player.LocalPlayer.UserId .. ".json"
 
 game.Players.LocalPlayer.Idled:Connect(function()
 	VirtualUser:ClickButton2(Vector2.new(0,0))
@@ -346,6 +346,23 @@ end
 
 Bobbing_Toggle(Toggle)
 
+function Readfile(name)
+	local data = {}
+	local result = function()
+	return HttpService:JSONDecode(Filename)
+	end
+	if result and type(result) == "table" then
+		data = result
+	end
+	return data
+end
+
+function Writefile(name,boolean)
+	local data = Readfile()
+	data[name] = boolean
+	Writefile(Filename, HttpService:JSONEncode(data))
+end
+
 function Library:Create_Button(text, value)
 	local List_Frame = Instance.new("Frame")
 	List_Frame.Size = UDim2.new(0.00, 110.00, 0.00, 40.00)
@@ -427,25 +444,11 @@ function Library:Create_Button(text, value)
 	return ScrollingFrame
 end
 
-function Readfile(name)
-	local data ={[name] = false }
-	if isfile(Filename) then
-		local result = HttpService:JSONDecode(readfile(Filename))
-		return result
+function Library:Create_MainButton(frame,config_name,boolean, callback)
+	local data = Readfile()
+	if data[config_name] ~= nil then
+		boolean = data[config_name]
 	end
-	return data
-end
-
-function Writefile(name, boolean)
-    local data = Readfile(name)
-	data[name] = boolean
-	writefile(Filename, HttpService:JSONEncode(data))
-end
-
-function Library:Create_MainButton(frame,config_name,boolean,callback)
-
-	local Config = Readfile(config_name)
-	local boo = Config[config_name] 
 
 	local Frame = Instance.new("Frame")
 	Frame.Size = UDim2.new(0.00, 500.00, 0.00, 40.00)
@@ -500,12 +503,12 @@ function Library:Create_MainButton(frame,config_name,boolean,callback)
 	local TweenInfo = TweenInfo.new(0.20, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 	TextButton.MouseButton1Click:Connect(function()
 		boolean = not boolean
+		Writefile(config_name, boolean)
 		local BackgroundColor = boolean and Color3.new(0.333333, 1, 0) or Color3.new(0.14, 0.14, 0.14)
 		local Position = boolean and UDim2.new(0.50, 0.00, 0.00, 0.00) or UDim2.new(0.00, 0.00, 0.00, 0.00)
 		TweenService:Create(TextButton, TweenInfo, {BackgroundColor3 = BackgroundColor}):Play()
 		TweenService:Create(Frame_1, TweenInfo, {Position = Position}):Play()
-		Writefile(config_name, boolean)
-
+		
 		if boolean then 
 			callback()
 		end
