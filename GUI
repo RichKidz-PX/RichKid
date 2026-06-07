@@ -586,9 +586,7 @@ function Library:Create_MainButton(frame,title,config_name,boolean, callback)
 		TweenService:Create(TextButton, TweenInfo, {BackgroundColor3 = BackgroundColor}):Play()
 		TweenService:Create(Frame_1, TweenInfo, {Position = Position}):Play()
 		
-		if boolean then 
-			callback()
-		end
+		callback(boolean)
 	end)
 end
 
