@@ -573,6 +573,10 @@ function Library:Create_MainButton(frame,title,config_name,boolean, callback)
 	local UICorner_1 = Instance.new("UICorner")
 	UICorner_1.Parent = TextButton
 
+	if boolean then 
+		callback()
+	end
+
 	local TweenInfo = TweenInfo.new(0.20, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 	TextButton.MouseButton1Click:Connect(function()
 		boolean = not boolean
