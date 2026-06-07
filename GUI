@@ -427,7 +427,7 @@ function Library:Create_Button(text, value)
 	UICorner.Parent = ScrollingFrame
 	
 	local UIListLayout = Instance.new("UIListLayout")
-	UIListLayout.Padding = UDim.new(0.00, 20.00)
+	UIListLayout.Padding = UDim.new(0.00, 10.00)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	UIListLayout.Parent = ScrollingFrame
@@ -444,6 +444,77 @@ function Library:Create_Button(text, value)
 		ScrollingFrame.Visible = true
 	end)
 	return ScrollingFrame
+end
+
+function Library:Title(frame,title)
+	local TextLabel = Instance.new("TextLabel")
+	TextLabel.BorderSizePixel = 0
+	TextLabel.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextLabel.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	TextLabel.TextSize = 26
+	TextLabel.Size = UDim2.new(0.00, 212.00, 0.00, 40.00)
+	TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextLabel.Text = title
+	TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextLabel.BackgroundTransparency = 1
+	TextLabel.Position = UDim2.new(0.25, 0.00, 0.00, 0.00)
+	TextLabel.Parent = frame
+
+	local UIPadding = Instance.new("UIPadding")
+	UIPadding.PaddingLeft = UDim.new(0.00, -350.00)
+	UIPadding.Parent = TextLabel
+	
+	local Frame = Instance.new("Frame")
+	Frame.Size = UDim2.new(0.00, 490.00, 0.00, 1.00)
+	Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	Frame.Position = UDim2.new(0.371, 0.00, 0.9, 0.00)
+	Frame.BorderSizePixel = 0
+	Frame.BackgroundColor3 = Color3.new(1.00, 1.00, 1.00)
+	Frame.Parent = TextLabel
+end
+
+function Library:ClickButton(frame,title,text,callback)
+	local Frame = Instance.new("Frame")
+	Frame.Size = UDim2.new(0.00, 500.00, 0.00, 40.00)
+	Frame.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	Frame.Position = UDim2.new(0.05, 0.00, 0.03, 0.00)
+	Frame.BorderSizePixel = 0
+	Frame.BackgroundColor3 = Color3.new(0.22, 0.22, 0.22)
+	Frame.Parent = frame
+
+	local UICorner = Instance.new("UICorner")
+	UICorner.Parent = Frame
+
+	local TextLabel = Instance.new("TextLabel")
+	TextLabel.BorderSizePixel = 0
+	TextLabel.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+	TextLabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+	TextLabel.TextSize = 24
+	TextLabel.Size = UDim2.new(0.00, 165.00, 0.00, 40.00)
+	TextLabel.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextLabel.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextLabel.Text = title
+	TextLabel.BackgroundTransparency = 1
+	TextLabel.Parent = Frame
+
+	local TextButton = Instance.new("TextButton")
+	TextButton.BorderSizePixel = 0
+	TextButton.BackgroundColor3 = Color3.new(0.14, 0.14, 0.14)
+	TextButton.FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+	TextButton.TextSize = 18
+	TextButton.Size = UDim2.new(0.00, 80.00, 0.00, 30.00)
+	TextButton.TextColor3 = Color3.new(1.00, 1.00, 1.00)
+	TextButton.BorderColor3 = Color3.new(0.00, 0.00, 0.00)
+	TextButton.Text = text
+	TextButton.Position = UDim2.new(0.65, 0.00, 0.12, 0.00)
+	TextButton.Parent = Frame
+
+	local UICorner = Instance.new("UICorner")
+	UICorner.Parent = TextButton
+
+	TextButton.MouseButton1Click:Connect(function()
+		callback()
+	end)
 end
 
 function Library:Create_MainButton(frame,title,config_name,boolean, callback)
