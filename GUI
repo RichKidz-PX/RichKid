@@ -573,10 +573,6 @@ function Library:Create_MainButton(frame,title,config_name,boolean, callback)
 	local UICorner_1 = Instance.new("UICorner")
 	UICorner_1.Parent = TextButton
 
-	if boolean then 
-		callback()
-	end
-
 	local TweenInfo = TweenInfo.new(0.20, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 	TextButton.MouseButton1Click:Connect(function()
 		boolean = not boolean
@@ -586,8 +582,14 @@ function Library:Create_MainButton(frame,title,config_name,boolean, callback)
 		TweenService:Create(TextButton, TweenInfo, {BackgroundColor3 = BackgroundColor}):Play()
 		TweenService:Create(Frame_1, TweenInfo, {Position = Position}):Play()
 		
-		callback(boolean)
+		if boolean then
+			callback(boolean)
+		end
 	end)
+
+	if boolean then
+		callback(boolean)
+	end
 end
 
 return Library
