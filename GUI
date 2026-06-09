@@ -1,4 +1,5 @@
 local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ScriptGui"
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
